@@ -1,7 +1,9 @@
 
 import lib
 
-def main():
+def main() -> None:
+    """選擇頁面
+    """
     lib.create_table()
     while True:
         print()
@@ -31,7 +33,6 @@ def main():
             print('系統已退出。')
             exit()
             
-
 if __name__ == "__main__":
     main()
     

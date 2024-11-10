@@ -5,7 +5,12 @@ DB_PATH = 'movies.db'
 JSON_IN_PATH = 'movies.json'
 JSON_OUT_PATH = 'exported.json'
 
-def print_movie_row(row):
+def print_movie_row(row: dict) -> None:
+    """格式化輸出 movie 的 row
+
+    Args:
+        row (dict): 獲取到的 movie 的字典類型
+    """
     print(
         f"{row['title']:{chr(12288)}<10}"
         f"{row['director']:{chr(12288)}<12}"
@@ -14,7 +19,9 @@ def print_movie_row(row):
         f"{row['rating']:{chr(12288)}<10}"
     )
 
-def list_rpt():
+def list_rpt() -> None:
+    """格式化輸出
+    """
     header = (
         f"{'電影名稱'}{chr(12288) * 6}"
         f"{'導演'}{chr(12288) * 10}"
@@ -27,7 +34,7 @@ def list_rpt():
     print(header)
     print(separator)
 
-def create_table():
+def create_table() -> None:
     with connect_db() as conn:
         cursor = conn.cursor()
         try:
@@ -46,7 +53,9 @@ def create_table():
         except Exception as e:
             print(f'發生其它錯誤 {e}')
 
-def import_movies():
+def import_movies() -> None:
+    """從 Json 檔案導入至資料庫
+    """
     try:
         with open(JSON_IN_PATH, 'r', encoding='UTF-8') as f:
             movies = json.load(f)
@@ -77,7 +86,9 @@ def import_movies():
         conn.commit()
     print('電影已匯入')
 
-def search_movie():
+def search_movie() -> None:
+    """查詢電影操作
+    """
     y_n = input('查詢全部電影嗎？(y/n): ')
     
     with connect_db() as conn:
@@ -101,7 +112,9 @@ def search_movie():
         except Exception as e:
             print(f'發生其它錯誤 {e}')
 
-def add_movie():
+def add_movie() -> None:
+    """新增電影操作
+    """
     try:
         title = input('電影名稱： ')
         director = input('導演： ')
@@ -123,7 +136,9 @@ def add_movie():
     except Exception as e:
         print(f'發生其它錯誤 {e}')
 
-def modify_movies():
+def modify_movies() -> None:
+    """修改電影操作
+    """
     title = input('請輸入要修改的電影名稱： ')
     with connect_db() as conn:
         cursor = conn.cursor()
@@ -167,7 +182,7 @@ def modify_movies():
     except Exception as e:
         print(f'發生其它錯誤 {e}')
 
-def delete_movies():
+def delete_movies() -> None:
     y_n = input('刪除全部電影嗎？(y/n)： ')
     with connect_db() as conn:
         cursor = conn.cursor()
@@ -188,14 +203,14 @@ def delete_movies():
                 if yn.lower() == 'y':
                     cursor.execute('DELETE FROM movies WHERE title LIKE ?', (f'%{rm_title}%',))
                     print('電影已刪除')
-                else:
-                    return
         except sqlite3.DatabaseError as e:
             print(f'資料庫操作發生錯誤： {e}')
         except Exception as e:
             print(f'發生其它錯誤 {e}')
 
-def export_movies():
+def export_movies() -> None:
+    """從資料庫導出電影檔案(json)
+    """
     y_n = input('匯出全部電影嗎？(y_n)： ')
     
     with connect_db() as conn:
@@ -231,7 +246,12 @@ def export_movies():
         except Exception as e:
             print(f'發生其它錯誤 {e}')
 
-def connect_db():
+def connect_db() -> sqlite3.Connection:
+    """建立資料庫連線與相關設定
+
+    Returns:
+        sqlite3.Connection: sqlite3 所建立的連線
+    """
     try:
         conn = sqlite3.connect(DB_PATH)
         conn.row_factory = sqlite3.Row  # 使用字典型別的 cursor
